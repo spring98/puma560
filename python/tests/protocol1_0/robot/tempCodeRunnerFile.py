@@ -1,0 +1,5 @@
+p.Matrix(([m11, m12], [m21, m22]))
+inverse = inv(array)
+print(array)
+print('\n')
+print(inverse)
