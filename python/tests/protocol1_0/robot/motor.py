@@ -86,9 +86,9 @@ class Motor:
         self.portHandler.closePort()
 
     # 모터의 각도를 조절 하는 메서드
+    # 순서 대로 4axis, 5axis, 6axis
     def degree(self, degree3, degree0, degree2):
 
-        # print(51 / 300)
         print('가동중...')
 
         motor0temp = degree0 + 150
@@ -99,15 +99,9 @@ class Motor:
         dxl_goal_position2 = int((motor2temp / 300.0) * 1023)
         dxl_goal_position3 = int((motor3temp / 300.0) * 1023)
 
-        dxl_present_position0, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler,
-                                                                                             self.DXL_ID0,
-                                                                                             self.ADDR_MX_PRESENT_POSITION)
-        dxl_present_position2, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler,
-                                                                                             self.DXL_ID2,
-                                                                                             self.ADDR_MX_PRESENT_POSITION)
-        dxl_present_position3, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler,
-                                                                                             self.DXL_ID3,
-                                                                                             self.ADDR_MX_PRESENT_POSITION)
+        dxl_present_position0, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, self.DXL_ID0, self.ADDR_MX_PRESENT_POSITION)
+        dxl_present_position2, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, self.DXL_ID2, self.ADDR_MX_PRESENT_POSITION)
+        dxl_present_position3, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_MX_PRESENT_POSITION)
 
         velocity0 = int(round(abs(dxl_goal_position0 - dxl_present_position0) / 2))
         velocity2 = int(round(abs(dxl_goal_position2 - dxl_present_position2) / 2))
@@ -118,24 +112,15 @@ class Motor:
         self.packetHandler.write2ByteTxRx(self.portHandler, self.DXL_ID2, self.ADDR_MX_MOVING_SPEED, velocity2)
         self.packetHandler.write2ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_MX_MOVING_SPEED, velocity3)
 
-        self.packetHandler.write2ByteTxRx(self.portHandler, self.DXL_ID0, self.ADDR_MX_GOAL_POSITION,
-                                          dxl_goal_position0)
-        self.packetHandler.write2ByteTxRx(self.portHandler, self.DXL_ID2, self.ADDR_MX_GOAL_POSITION,
-                                          dxl_goal_position2)
-        self.packetHandler.write2ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_MX_GOAL_POSITION,
-                                          dxl_goal_position3)
+        self.packetHandler.write2ByteTxRx(self.portHandler, self.DXL_ID0, self.ADDR_MX_GOAL_POSITION, dxl_goal_position0)
+        self.packetHandler.write2ByteTxRx(self.portHandler, self.DXL_ID2, self.ADDR_MX_GOAL_POSITION, dxl_goal_position2)
+        self.packetHandler.write2ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_MX_GOAL_POSITION, dxl_goal_position3)
 
         while 1:
             # Read present position
-            dxl_present_position0, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler,
-                                                                                                 self.DXL_ID0,
-                                                                                                 self.ADDR_MX_PRESENT_POSITION)
-            dxl_present_position2, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler,
-                                                                                                 self.DXL_ID2,
-                                                                                                 self.ADDR_MX_PRESENT_POSITION)
-            dxl_present_position3, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler,
-                                                                                                 self.DXL_ID3,
-                                                                                                 self.ADDR_MX_PRESENT_POSITION)
+            dxl_present_position0, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, self.DXL_ID0, self.ADDR_MX_PRESENT_POSITION)
+            dxl_present_position2, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, self.DXL_ID2, self.ADDR_MX_PRESENT_POSITION)
+            dxl_present_position3, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_MX_PRESENT_POSITION)
 
             if ((abs(dxl_goal_position0 - dxl_present_position0) < 20) and (
                     abs(dxl_goal_position2 - dxl_present_position2) < 20) and (
