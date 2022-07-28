@@ -4,21 +4,21 @@ import sympy as sp
 
 def kinematics(Px, Py, Pz) -> tuple:
     # 고정 링크 parameter
-    a2 = 1
+    a2 = 1 # L1
     a3 = 0
-    d3 = 1
-    d4 = 1
+    d3 = 0
+    d4 = 1 # L2
 
     # 방위 파라 미터
     R11 = 1
     R12 = 0
     R13 = 0
     R21 = 0
-    R22 = -1
+    R22 = 1
     R23 = 0
     R31 = 0
     R32 = 0
-    R33 = -1
+    R33 = 1
 
     # 위치 parameter
     # Px = 1
@@ -29,14 +29,14 @@ def kinematics(Px, Py, Pz) -> tuple:
     T06 = sp.Matrix(([R11, R12, R13, Px],
                      [R21, R22, R23, Py],
                      [R31, R32, R33, Pz],
-                     [0, 0, 0, Px],))
+                     [0, 0, 0, 1],))
 
     th1 = sp.Matrix(([atan2(Py, Px) - atan2(d3, (Px ** 2 + Py ** 2 - d3 ** 2) ** 0.5)],
                      [atan2(Py, Px) - atan2(d3, (Px ** 2 + Py ** 2 - d3 ** 2) ** 0.5)],
                      [atan2(Py, Px) - atan2(d3, -(Px ** 2 + Py ** 2 - d3 ** 2) ** 0.5)],
                      [atan2(Py, Px) - atan2(d3, -(Px ** 2 + Py ** 2 - d3 ** 2) ** 0.5)],))
 
-    K = (Px ** 2 + Py ** 2 + Px ** 2 - a2 ** 2 - a3 ** 2 - d3 ** 2 - d4 ** 2) / 2 * a2
+    K = (Px ** 2 + Py ** 2 + Pz ** 2 - a2 ** 2 - a3 ** 2 - d3 ** 2 - d4 ** 2) / 2 * a2
 
     th3 = sp.Matrix(([atan2(a3, d4) - atan2(K, (a3 ** 2 + d4 ** 2 - K ** 2) ** 0.5)],
                      [atan2(a3, d4) - atan2(K, -(a3 ** 2 + d4 ** 2 - K ** 2) ** 0.5)],
@@ -45,13 +45,13 @@ def kinematics(Px, Py, Pz) -> tuple:
 
     th23 = sp.Matrix(
         ([atan2((-a3 - a2 * cos(th3[0])) * Pz - (cos(th1[0]) * Px + sin(th1[0]) * Py) * (d4 - a2 * sin(th3[0])),
-                (a2 * sin(th3[0]) - d4) * Pz - (a3 + a2 * cos(th3[0])) * (cos(th1[0]) * Px + sin(th1[0]) * Py))],
+                (a2 * sin(th3[0]) - d4) * Pz + (a3 + a2 * cos(th3[0])) * (cos(th1[0]) * Px + sin(th1[0]) * Py))],
          [atan2((-a3 - a2 * cos(th3[1])) * Pz - (cos(th1[1]) * Px + sin(th1[1]) * Py) * (d4 - a2 * sin(th3[1])),
-                (a2 * sin(th3[1]) - d4) * Pz - (a3 + a2 * cos(th3[1])) * (cos(th1[1]) * Px + sin(th1[1]) * Py))],
+                (a2 * sin(th3[1]) - d4) * Pz + (a3 + a2 * cos(th3[1])) * (cos(th1[1]) * Px + sin(th1[1]) * Py))],
          [atan2((-a3 - a2 * cos(th3[2])) * Pz - (cos(th1[2]) * Px + sin(th1[2]) * Py) * (d4 - a2 * sin(th3[2])),
-                (a2 * sin(th3[2]) - d4) * Pz - (a3 + a2 * cos(th3[2])) * (cos(th1[2]) * Px + sin(th1[2]) * Py))],
+                (a2 * sin(th3[2]) - d4) * Pz + (a3 + a2 * cos(th3[2])) * (cos(th1[2]) * Px + sin(th1[2]) * Py))],
          [atan2((-a3 - a2 * cos(th3[3])) * Pz - (cos(th1[3]) * Px + sin(th1[3]) * Py) * (d4 - a2 * sin(th3[3])),
-                (a2 * sin(th3[3]) - d4) * Pz - (a3 + a2 * cos(th3[3])) * (cos(th1[3]) * Px + sin(th1[3]) * Py))],))
+                (a2 * sin(th3[3]) - d4) * Pz + (a3 + a2 * cos(th3[3])) * (cos(th1[3]) * Px + sin(th1[3]) * Py))],))
 
     th2 = th23 - th3
 
