@@ -6,17 +6,20 @@ import kinematics
 # .py가 포함된 폴더 = package
 # from abc import xyz : abc 라는 package(폴더) 에서 xyz 라는 module (파일)을 불러옴
 
-# motor = motor.Motor()
+# set home
+motor = motor.Motor()
+# motor.degree(0, 0, 0, 0, 0)
 
 for i in range(1, 10):
     # 1 1 0 -> 1 1 1
-    print('입장')
     Px = 1
     Py = 1
     Pz = i * 0.1
 
     result = kinematics.kinematics(Px, Py, Pz)
     print(result)
+    # motor.degree(result[1][0], result[1][1], result[1][2])
+    motor.degree(result[0][0], result[0][1], result[0][2], result[0][3], result[0][4])
 #
 #     # range is -150 < degree < +150
 #     if (-150 < result[0][3] < 150) and (-150 < result[0][4] < 150) and (-150 < result[0][5] < 150):
@@ -29,23 +32,8 @@ for i in range(1, 10):
 #         motor.degree(result[3][3], result[3][4], result[3][5])
 #     else:
 #         break
-#
-#     time.sleep(1)
-#     print('나감')
-
-
-# range is -150 < degree < +150
 
 # motor.degree(30, 30, 10)
 # time.sleep(1)
 # result = kinematics.kinematics(1, 0, 1)
 # print(result)
-
-
-# motor.degree(40)
-# time.sleep(1)
-# motor.degree(0)
-# time.sleep(1)
-# motor.degree(80)
-# time.sleep(1)
-# motor.degree(0)

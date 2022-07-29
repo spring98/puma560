@@ -14,11 +14,11 @@ def kinematics(Px, Py, Pz) -> tuple:
     R12 = 0
     R13 = 0
     R21 = 0
-    R22 = 1
+    R22 = -1
     R23 = 0
     R31 = 0
     R32 = 0
-    R33 = 1
+    R33 = -1
 
     # 위치 parameter
     # Px = 1
@@ -133,10 +133,10 @@ def kinematics(Px, Py, Pz) -> tuple:
                                  sin(th2[3] + th3[3]) * cos(th4[3]) * cos(th5[3]) + cos(th2[3] + th3[3]) * sin(
                              th5[3])))],))
 
-    solution1 = [th1[0], th2[0], th3[0], th4[0], th5[0], th6[0]]
-    solution2 = [th1[1], th2[1], th3[1], th4[1], th5[1], th6[1]]
-    solution3 = [th1[2], th2[2], th3[2], th4[2], th5[2], th6[2]]
-    solution4 = [th1[3], th2[3], th3[3], th4[3], th5[3], th6[3]]
+    solution1 = [th1[0], -th2[0], th3[0], th4[0], th5[0], th6[0]]
+    solution2 = [th1[1], -th2[1], th3[1], th4[1], th5[1], th6[1]]
+    solution3 = [th1[2], -th2[2], th3[2], th4[2], th5[2], th6[2]]
+    solution4 = [th1[3], -th2[3], th3[3], th4[3], th5[3], th6[3]]
 
     sol1 = [round(x * 180 / pi) for x in solution1]
     sol2 = [round(x * 180 / pi) for x in solution2]

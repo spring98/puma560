@@ -78,6 +78,10 @@ class Motor:
                                           self.TORQUE_ENABLE)
         self.packetHandler.write1ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_TORQUE_ENABLE,
                                           self.TORQUE_ENABLE)
+        self.packetHandler.write1ByteTxRx(self.portHandler, self.DXL_ID4, self.ADDR_TORQUE_ENABLE,
+                                          self.TORQUE_ENABLE)
+        self.packetHandler.write1ByteTxRx(self.portHandler, self.DXL_ID5, self.ADDR_TORQUE_ENABLE,
+                                          self.TORQUE_ENABLE)
 
     def __del__(self) -> None:
         # 토크 인가 전류 해제
@@ -87,7 +91,7 @@ class Motor:
         self.portHandler.closePort()
 
     # 모터의 각도를 조절 하는 메서드 2147483647 4294967296
-    def degree(self, degree1, degree2, degree3):
+    def degree(self, degree1, degree2, degree3, degree4, degree5):
         print('가동중...')
 
         # initial present position
@@ -100,23 +104,42 @@ class Motor:
         initial_present_position_ID3, _, _ = self.packetHandler.read4ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_PRESENT_POSITION)
         if initial_present_position_ID3 > 100000000:
             initial_present_position_ID3 = initial_present_position_ID3 - 4294967296
+        initial_present_position_ID4, _, _ = self.packetHandler.read4ByteTxRx(self.portHandler, self.DXL_ID4, self.ADDR_PRESENT_POSITION)
+        if initial_present_position_ID4 > 100000000:
+            initial_present_position_ID4 = initial_present_position_ID4 - 4294967296
+        initial_present_position_ID5, _, _ = self.packetHandler.read4ByteTxRx(self.portHandler, self.DXL_ID5, self.ADDR_PRESENT_POSITION)
+        if initial_present_position_ID5 > 100000000:
+            initial_present_position_ID5 = initial_present_position_ID5 - 4294967296
+
+        DESIRED_VELOCITY = 5
 
         # goal position about input degree
         goal_position_ID1 = int((degree1 / 360.0) * 4095)
         if goal_position_ID1 - initial_present_position_ID1 > 0:
-            VELOCITY_ID1 = 5
+            VELOCITY_ID1 = DESIRED_VELOCITY
         else:
-            VELOCITY_ID1 = -5
+            VELOCITY_ID1 = -DESIRED_VELOCITY
         goal_position_ID2 = int((degree2 / 360.0) * 4095)
         if goal_position_ID2 - initial_present_position_ID2 > 0:
-            VELOCITY_ID2 = 5
+            VELOCITY_ID2 = DESIRED_VELOCITY
         else:
-            VELOCITY_ID2 = -5
+            VELOCITY_ID2 = -DESIRED_VELOCITY
         goal_position_ID3 = int((degree3 / 360.0) * 4095)
         if goal_position_ID3 - initial_present_position_ID3 > 0:
-            VELOCITY_ID3 = 5
+            VELOCITY_ID3 = DESIRED_VELOCITY
         else:
-            VELOCITY_ID3 = -5
+            VELOCITY_ID3 = -DESIRED_VELOCITY
+        goal_position_ID4 = int((degree4 / 360.0) * 4095)
+        if goal_position_ID4 - initial_present_position_ID4 > 0:
+            VELOCITY_ID4 = DESIRED_VELOCITY
+        else:
+            VELOCITY_ID4 = -DESIRED_VELOCITY
+        goal_position_ID5 = int((degree5 / 360.0) * 4095)
+        if goal_position_ID5 - initial_present_position_ID5 > 0:
+            VELOCITY_ID5 = DESIRED_VELOCITY
+        else:
+            VELOCITY_ID5 = -DESIRED_VELOCITY
+
         print(goal_position_ID3)
         print(initial_present_position_ID3)
 
@@ -124,10 +147,15 @@ class Motor:
         self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID1, self.ADDR_GOAL_VELOCITY, VELOCITY_ID1)
         self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID2, self.ADDR_GOAL_VELOCITY, VELOCITY_ID2)
         self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_GOAL_VELOCITY, VELOCITY_ID3)
+        self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID4, self.ADDR_GOAL_VELOCITY, VELOCITY_ID4)
+        self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID5, self.ADDR_GOAL_VELOCITY, VELOCITY_ID5)
 
         flag1 = False
         flag2 = False
         flag3 = False
+        flag4 = False
+        flag5 = False
+
         while 1:
             # Read present position
             present_position_ID1, _, _ = self.packetHandler.read4ByteTxRx(self.portHandler, self.DXL_ID1, self.ADDR_PRESENT_POSITION)
@@ -139,11 +167,18 @@ class Motor:
             present_position_ID3, _, _ = self.packetHandler.read4ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_PRESENT_POSITION)
             if present_position_ID3 > 100000000:
                 present_position_ID3 = present_position_ID3 - 4294967296
+            present_position_ID4, _, _ = self.packetHandler.read4ByteTxRx(self.portHandler, self.DXL_ID4, self.ADDR_PRESENT_POSITION)
+            if present_position_ID4 > 100000000:
+                present_position_ID4 = present_position_ID4 - 4294967296
+            present_position_ID5, _, _ = self.packetHandler.read4ByteTxRx(self.portHandler, self.DXL_ID5, self.ADDR_PRESENT_POSITION)
+            if present_position_ID5 > 100000000:
+                present_position_ID5 = present_position_ID5 - 4294967296
 
             print(f'ID1 -> goal angle : {(goal_position_ID1 / 4095) * 360}, present angle : {(present_position_ID1 / 4095) * 360}')
             print(f'ID2 -> goal angle : {(goal_position_ID2 / 4095) * 360}, present angle : {(present_position_ID2 / 4095) * 360}')
             print(f'ID3 -> goal angle : {(goal_position_ID3 / 4095) * 360}, present angle : {(present_position_ID3 / 4095) * 360}')
-            print(f'ID3 -> goal : {goal_position_ID3}, present : {present_position_ID3}')
+            print(f'ID4 -> goal angle : {(goal_position_ID4 / 4095) * 360}, present angle : {(present_position_ID4 / 4095) * 360}')
+            print(f'ID5 -> goal angle : {(goal_position_ID5 / 4095) * 360}, present angle : {(present_position_ID5 / 4095) * 360}')
 
             if abs(goal_position_ID1 - present_position_ID1) < 10:
                 self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID1, self.ADDR_GOAL_VELOCITY, 0)
@@ -154,6 +189,14 @@ class Motor:
             if abs(goal_position_ID3 - present_position_ID3) < 10:
                 self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID3, self.ADDR_GOAL_VELOCITY, 0)
                 flag3 = True
-            if flag1 and flag2 and flag3:
+            if abs(goal_position_ID4 - present_position_ID4) < 10:
+                self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID4, self.ADDR_GOAL_VELOCITY, 0)
+                flag4 = True
+            if abs(goal_position_ID5 - present_position_ID5) < 10:
+                self.packetHandler.write4ByteTxRx(self.portHandler, self.DXL_ID5, self.ADDR_GOAL_VELOCITY, 0)
+                flag5 = True
+            if flag1 and flag2 and flag3 and flag4 and flag5:
                 break
 
+            print(
+                f'flag1 : {flag1}, flag2 : {flag2}, flag3 : {flag3}, flag4 : {flag4}, flag5 : {flag5}')
