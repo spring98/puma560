@@ -4,10 +4,10 @@ import sympy as sp
 
 def kinematics(Px, Py, Pz) -> tuple:
     # 고정 링크 parameter
-    a2 = 1 # L1
+    a2 = 0.3  # L1
     a3 = 0
     d3 = 0
-    d4 = 1 # L2
+    d4 = 0.3  # L2
 
     # 방위 파라 미터
     R11 = 1
